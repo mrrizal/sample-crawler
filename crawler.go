@@ -177,5 +177,5 @@ func main() {
 		workerPool(urlset)
 	}
 	elapsed := time.Since(start)
-	fmt.Printf("Wait Group took %s\n", elapsed)
+	fmt.Printf("%s took %s\n", *method, elapsed)
 }

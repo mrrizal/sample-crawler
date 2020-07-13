@@ -29,9 +29,10 @@ type News struct {
 	XMLName         xml.Name `xml:"news"`
 	PublicationDate string   `xml:"publication_date"`
 	Title           string   `xml:"title"`
-	Keyword         string   `xml:"keywords"`
+	Keywords        string   `xml:"keywords"`
 }
 
+// CrawlResult just url and stauts code
 type CrawlResult struct {
 	url        string
 	statusCode int
@@ -63,22 +64,6 @@ func parseXMLFile(filename string) (URLSet, error) {
 	var urlset URLSet
 	xml.Unmarshal(xmlData, &urlset)
 	return urlset, nil
-}
-
-func chunkURL(urls []URL) [][]URL {
-	var chunkedURL [][]URL
-	chunkSize := 10
-
-	for i := 0; i < len(urls); i += chunkSize {
-		end := i + chunkSize
-
-		if end > len(urls) {
-			end = len(urls)
-		}
-
-		chunkedURL = append(chunkedURL, urls[i:end])
-	}
-	return chunkedURL
 }
 
 func crawler(wg *sync.WaitGroup, tasks <-chan URL,
@@ -123,7 +108,7 @@ func waitGroup(urlset URLSet) {
 		result := <-results
 		fmt.Printf("[main] result %s: %d\n", result.url, result.statusCode)
 		if result.statusCode == 200 {
-			success += 1
+			success++
 		}
 	}
 	fmt.Printf("Total urls %d, success %d\n", len(urlset.URLs), success)
@@ -165,7 +150,7 @@ func workerPool(urlset URLSet) {
 		result := <-results
 		fmt.Printf("[main] result %s: %d\n", result.url, result.statusCode)
 		if result.statusCode == 200 {
-			success += 1
+			success++
 		}
 	}
 	fmt.Printf("Total urls %d, success %d\n", len(urlset.URLs), success)
